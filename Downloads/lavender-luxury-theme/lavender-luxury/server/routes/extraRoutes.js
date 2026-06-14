@@ -38,7 +38,8 @@ module.exports.wishlistRouter = (() => {
         wishlist.products.push(req.params.productId);
       }
       await wishlist.save();
-      res.json({ success: true, wishlist, isWishlisted: idx === -1 });
+      const populated = await wishlist.populate('products');
+      res.json({ success: true, wishlist: populated, isWishlisted: idx === -1 });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
   });
   return r;

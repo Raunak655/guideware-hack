@@ -7,7 +7,7 @@ import { PRODUCTS } from '../../utils/data';
 
 export default function WishlistPage() {
   const { products } = useSelector(s => s.wishlist);
-  const wishlistProducts = PRODUCTS.filter(p => products?.some(id => (id._id || id) === p._id));
+  const wishlistProducts = products || [];
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-16">
       <div className="flex items-center justify-between mb-8">
