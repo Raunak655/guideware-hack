@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 
 const Product = require("../models/Product");
 const { Coupon } = require("../models/index");
@@ -23,13 +24,18 @@ router.post("/", async (req, res) => {
 
     const { message } = req.body;
 
-    const products = await Product.find({
-      isActive: true
-    });
+    let products = [];
+    let coupons = [];
 
-    const coupons = await Coupon.find({
-      isActive: true
-    });
+    // Query database only if connection is active to prevent buffering timeout
+    if (mongoose.connection.readyState === 1) {
+      try {
+        products = await Product.find({ isActive: true }).maxTimeMS(2000);
+        coupons = await Coupon.find({ isActive: true }).maxTimeMS(2000);
+      } catch (dbErr) {
+        console.error("Database query failed in chat route:", dbErr.message);
+      }
+    }
 
     const productText = products
       .map(
@@ -57,7 +63,7 @@ Price: ₹${p.price}`
     }
 
     const model = ai.getGenerativeModel({
-      model: "gemini-2.0-flash"
+      model: "gemini-flash-lite-latest"
     });
 
  const prompt = `

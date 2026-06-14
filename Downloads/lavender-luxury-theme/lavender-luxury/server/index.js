@@ -88,14 +88,14 @@ const startServer = async () => {
   try {
     await connectToDatabase();
     await seedDefaultUsers();
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-    });
   } catch (err) {
     console.error('❌ MongoDB startup failed:', err.message);
-    console.error('⚠️ Please verify your database configuration and ensure MongoDB is reachable.');
-    process.exit(1);
+    console.warn('⚠️ The server is starting up, but database operations will fail until MongoDB is reachable.');
   }
+
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+  });
 };
 
 startServer();
